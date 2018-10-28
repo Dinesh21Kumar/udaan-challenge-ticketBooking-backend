@@ -1,0 +1,20 @@
+{
+  "name": "ticketbooking",
+  "version": "1.0.0",
+  "description": "nodejs based api framework for tciket booking",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Dinesh Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.2",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.8",
+    "nodemon": "^1.18.4"
+  }
+}
