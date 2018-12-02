@@ -1,0 +1,249 @@
+1. Basic Architectiure Diagram
+
+2. Technology Stack and Tools Used
+- Express NodeJS (4.16.0,v10.9.0)
+- MongoDB (v3.4.7)
+- Sublime Text Editor
+- Postman Client 
+- npm (6.2.0)
+
+3. Steps to run express application
+
+- Setup MongoDB on local machine, make sure it is running on 127.0.0.1://27017.
+- open the terminal and type mongod for running mongo service, open new tab and type mongo to enter mongo shell
+- Create a database by use ticketbooking , create collection screens by db.createCollection("screens")
+- Run db.screens.createIndex({name:1},{unique:true}),to make screen name as unique key.
+- Now DB is all set for use.
+- Download and extract the project folder, open the terminal and change directory to ticketbooking.
+- install npm on your machine, and run npm install in the project folder.
+- npm start , to run the express application on port 9090.
+- Great application is now ready to serve HTTP requests on port 9090.
+
+NOTE: If facing issues, make sure project folder has .env file 
+
+it should look like
+
+
+DB_NAME = "ticketbooking"
+DB_COLLECTION_NAME = "screens"
+DB_URL = "mongodb://localhost:27017"
+PORT = 9090
+
+
+4. API DOCS
+
+(a) POST, http://localhost:9090/screens  
+
+Description: API to create a screen 
+BODY:
+{
+	"name" : "Balazi",
+	"screenInfo" : {
+		"A" : {
+			"noOfSeats" : 10,
+			"aisleSeats": [0,5,6,9]
+			
+			
+		},
+		"B" : {
+			"noOfSeats" : 15,
+			"aisleSeats": [0,5,6,9]
+			
+		},
+		"D" : {
+			"noOfSeats" : 20,
+			"aisleSeats": [0,5,6,9]
+			
+		}
+	}
+
+}
+
+RESPONSE:
+Code: 200 or  400 with message.
+
+(b) POST, http://localhost:9090/screens/:name/reserve 
+
+Description: API to reserve seats at a screen
+BODY:
+{
+	"seats":{
+		"A":[0,1]
+	}
+}
+
+RESPONSE:
+Code: 200 or  400 with message.
+
+(c) GET, http://localhost:9090/screens/:name/seats?status=unreserved
+
+Description: API to get all unsreserved seats at a screen
+
+
+RESPONSE:
+Code: 200 or  400 with information about seats in JSON Format.
+for example:
+GET, http://localhost:9090/screens/testbalazi/seats?status=unreserved
+{"A":[2,3,4,5,6,7,8,9],"B":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],"D":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}
+
+(d) GET, http://localhost:9090/screens/:name/seats?numSeats=2&choice=A4
+
+Description: API to get all unsreserved seats at a screen with  customized inputs like numSeats , choice ( row number , prefered seat number)
+RESPONSE:
+Code: 200 or  400 with information about seats in JSON Format.
+
+for example:
+GET, http://localhost:9090/screens/testbalazi/seats?numSeats=2&choice=A4
+{
+    "A": [
+        3,
+        4
+    ]
+}
+
+
+5. How screens are stored in MongoDB?
+- run MongoDB, open mongo shell
+- use ticketbooking
+- show collections
+- db.screens.find({}).pretty()
+
+for example:
+
+db.screens.find({}).pretty()
+{
+	"_id" : ObjectId("5bc30c737f77bf975e279ce1"),
+	"name" : "INOX 4D",
+	"screenInfo" : {
+		"A" : {
+			"noOfSeats" : 4,
+			"availableSeats" : 4,
+			"rowStatus" : [
+				{
+					"seatNo" : 0,
+					"seatStatus" : "unreserved",
+					"isAisel" : true
+				},
+				{
+					"seatNo" : 1,
+					"seatStatus" : "unreserved",
+					"isAisel" : true
+				},
+				{
+					"seatNo" : 2,
+					"seatStatus" : "unreserved",
+					"isAisel" : false
+				},
+				{
+					"seatNo" : 3,
+					"seatStatus" : "unreserved",
+					"isAisel" : false
+				}
+			]
+		},
+		"B" : {
+			"noOfSeats" : 3,
+			"availableSeats" : 3,
+			"rowStatus" : [
+				{
+					"seatNo" : 0,
+					"seatStatus" : "unreserved",
+					"isAisel" : true
+				},
+				{
+					"seatNo" : 1,
+					"seatStatus" : "unreserved",
+					"isAisel" : true
+				},
+				{
+					"seatNo" : 2,
+					"seatStatus" : "unreserved",
+					"isAisel" : false
+				}
+			]
+		},
+		"D" : {
+			"noOfSeats" : 4,
+			"availableSeats" : 4,
+			"rowStatus" : [
+				{
+					"seatNo" : 0,
+					"seatStatus" : "unreserved",
+					"isAisel" : true
+				},
+				{
+					"seatNo" : 1,
+					"seatStatus" : "unreserved",
+					"isAisel" : true
+				},
+				{
+					"seatNo" : 2,
+					"seatStatus" : "unreserved",
+					"isAisel" : false
+				},
+				{
+					"seatNo" : 3,
+					"seatStatus" : "unreserved",
+					"isAisel" : false
+				}
+			]
+		}
+	}
+}
+
+
+- show indexes 
+for example:
+
+db.screens.getIndexes()
+[
+	{
+		"v" : 2,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_",
+		"ns" : "ticketbooking.screens"
+	},
+	{
+		"v" : 2,
+		"unique" : true,
+		"key" : {
+			"name" : 1
+		},
+		"name" : "name_1",
+		"ns" : "ticketbooking.screens"
+	}
+]
+
+
+
+
+6. Project Structure
+ticketbooking
+ - .env: this file contains all the environment variables needed. For example database name, collection name etc.
+ - index.js : this file contains the basic express application without routes defined for each request.
+ - dbconn.js: this file contains the functions to connect to mongodb server.
+ - mongodb.js: this file contains all the functions to perform CRUD operations in MongoDB.
+ - bl.js: this file contains all business logic functions required for HTTP requests. For example data processing, manipultion etc.
+ - package.json this file will contain all the dependencies required to run our application for example express, body-parser etc.
+
+
+
+ 7. Steps for Production level Deployment
+
+This can be done in many ways, i would do like to discuss one of my favourite approch.
+- Deployment by Kubernetes.
+- Create a docker Image of our project.
+- Deploy the docker image using Kubernetes Replicaset ( for exmple Replicas = 5 means five pods of bookingsystem backend )
+- For mongodb , we can deploy mongodb in cluster, for example three node MongoDB cluster with replicaset configration, one of the node will be primary and others will be secondary.
+- Secret passwords and urls can be stored in some secure place. For exmaple .env file.
+
+
+
+ 
+
+
+
+
+
